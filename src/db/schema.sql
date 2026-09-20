@@ -41,15 +41,11 @@ CREATE TABLE IF NOT EXISTS daily_posts (
 CREATE TABLE IF NOT EXISTS lessons_catalog (
   id          VARCHAR(64)  NOT NULL PRIMARY KEY,
   title       VARCHAR(128) NOT NULL,
+  category    VARCHAR(64)  NOT NULL DEFAULT 'Basics',
+  glyph       VARCHAR(16)  NOT NULL DEFAULT '',
   sort_order  INT          NOT NULL DEFAULT 0,
   active      TINYINT(1)   NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- MariaDB/MySQL both support ADD COLUMN IF NOT EXISTS, which keeps this file re-runnable against
--- a database that already has the pre-category/glyph version of lessons_catalog from an earlier
--- migration, without needing a separate versioned migration runner for a project this size.
-ALTER TABLE lessons_catalog ADD COLUMN IF NOT EXISTS category VARCHAR(64) NOT NULL DEFAULT 'Basics' AFTER title;
-ALTER TABLE lessons_catalog ADD COLUMN IF NOT EXISTS glyph VARCHAR(16) NOT NULL DEFAULT '' AFTER category;
 
 CREATE TABLE IF NOT EXISTS lesson_tags (
   lesson_id VARCHAR(64) NOT NULL,
