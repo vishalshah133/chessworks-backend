@@ -1,4 +1,9 @@
-import "dotenv/config";
+import path from "path";
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: path.join(__dirname, "..", "..", process.env.NODE_ENV === "production" ? ".env.production" : ".env"),
+});
 
 function required(name: string): string {
   const value = process.env[name];
@@ -16,6 +21,7 @@ export const env = {
     user: required("DB_USER"),
     password: process.env.DB_PASSWORD ?? "",
     database: required("DB_NAME"),
+    ssl: process.env.DB_SSL === "true",
   },
 
   jwt: {

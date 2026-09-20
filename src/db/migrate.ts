@@ -1,7 +1,11 @@
 import fs from "fs";
 import path from "path";
-import "dotenv/config";
+import dotenv from "dotenv";
 import mysql from "mysql2/promise";
+
+dotenv.config({
+  path: path.join(__dirname, "..", "..", process.env.NODE_ENV === "production" ? ".env.production" : ".env"),
+});
 
 async function run() {
   const connection = await mysql.createConnection({
@@ -11,6 +15,7 @@ async function run() {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     multipleStatements: true,
+    ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: true } : undefined,
   });
 
   try {
