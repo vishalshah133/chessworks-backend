@@ -22,6 +22,7 @@ export const env = {
     password: process.env.DB_PASSWORD ?? "",
     database: required("DB_NAME"),
     ssl: process.env.DB_SSL === "true",
+    sslCaPath: process.env.DB_SSL_CA_PATH,
   },
 
   jwt: {

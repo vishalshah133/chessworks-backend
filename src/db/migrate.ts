@@ -1,4 +1,5 @@
 import fs from "fs";
+import os from "os";
 import path from "path";
 import dotenv from "dotenv";
 import mysql from "mysql2/promise";
@@ -6,6 +7,13 @@ import mysql from "mysql2/promise";
 dotenv.config({
   path: path.join(__dirname, "..", "..", process.env.NODE_ENV === "production" ? ".env.production" : ".env"),
 });
+
+function loadSsl() {
+  if (process.env.DB_SSL !== "true") return undefined;
+  if (!process.env.DB_SSL_CA_PATH) return { rejectUnauthorized: true };
+  const caPath = process.env.DB_SSL_CA_PATH.replace(/^~/, os.homedir());
+  return { ca: fs.readFileSync(caPath, "utf8") };
+}
 
 async function run() {
   const connection = await mysql.createConnection({
@@ -15,7 +23,7 @@ async function run() {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     multipleStatements: true,
-    ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: true } : undefined,
+    ssl: loadSsl(),
   });
 
   try {
